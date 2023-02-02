@@ -14,6 +14,7 @@ namespace JWTAuthWebApi
         public DbSet<Student> Students { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Grade> Grades { get; set; }
+        public DbSet<Standards> Standards { get; set; }
 
         public SchoolContext() : base()
         {
@@ -39,10 +40,18 @@ namespace JWTAuthWebApi
             modelBuilder.Entity<Course>().Property<int>("CreatedBy");
             modelBuilder.Entity<Course>().Property<int>("UpdatedBy");
 
+
+            modelBuilder.Entity<Standards>().Property<DateTime>("CreatedDate");
+            modelBuilder.Entity<Standards>().Property<DateTime>("UpdatedDate");
+            modelBuilder.Entity<Standards>().Property<int>("CreatedBy");
+            modelBuilder.Entity<Standards>().Property<int>("UpdatedBy");
+
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=OM69\SQL2019;Database=SchoolDB;Trusted_Connection=True;");
+            optionsBuilder
+                .UseLazyLoadingProxies()
+                .UseSqlServer(@"Server=OM69\SQL2019;Database=SchoolDB;Trusted_Connection=True;");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using JWTAuthWebApi.Entities;
 using JWTAuthWebApi.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,5 +48,42 @@ namespace JWTAuthWebApi.Controllers
             }
             return Ok(student);
         }
+
+
+        [HttpPut]
+        public IActionResult AddStandardAndCourse()
+        {
+
+            using (var context = new SchoolContext())
+            {
+                using (IDbContextTransaction transaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var grade = context.Grades.Add(new Grade() { GradeName = "1st Grade" });
+
+                        context.Students.Add(new Student()
+                        {
+                            FirstName = "Rama",
+                            LastName = "Lakhan",
+                            GradeId = 1
+                        });
+
+                        context.SaveChanges();
+
+                        context.Courses.Add(new Course() { CourseName = "Computer Science" });
+                        context.SaveChanges();
+
+                        transaction.Commit();
+                        return Ok();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        return BadRequest();
+                    }
+                }
+            }
+        }   
     }
 }

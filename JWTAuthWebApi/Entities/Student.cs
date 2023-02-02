@@ -16,7 +16,7 @@ namespace JWTAuthWebApi.Entities
         public float Weight { get; set; }
 
         public int GradeId { get; set; }
-        public Grade Grade { get; set; }
+        public virtual Grade Grade { get; set; }
     }
 
     public class Grade
@@ -25,6 +25,14 @@ namespace JWTAuthWebApi.Entities
         public string GradeName { get; set; }
         public string Section { get; set; }
     }
+
+    public class Standards
+    {
+        public int Id { get; set; }
+        public string StandardName { get; set; }
+    }
+
+
 
 
 }
