@@ -53,7 +53,15 @@ namespace JWTAuthWebApi.Helpers
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "UserId").Value);
 
                 // attach user to context on successful jwt validation
-                context.Items["User"] = userService.GetById(userId);
+                //context.Items["User"] = userService.GetById(userId);
+
+             
+                using (var schoolContext = new SchoolContext())
+                {
+                    // attach user to context on successful jwt validation
+                    context.Items["User"] = schoolContext.User.Where(x => x.Id == userId).FirstOrDefault();
+                }
+
             }
             catch(Exception ex)
             {

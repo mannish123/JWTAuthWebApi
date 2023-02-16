@@ -18,10 +18,10 @@ namespace JWTAuthWebApi.Services
     {
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
         private IConfiguration _configuration;
-        private List<User> _users = new List<User>
-        {
-            new User { Id = 1, FirstName = "Test", LastName = "User", Username = "test", Password = "test" }
-        };
+        //private List<User> _users = new List<User>
+        //{
+        //    new User { Id = 1, FirstName = "Test", LastName = "User", Username = "test", Password = "test" }
+        //};
 
         public UserService(IConfiguration configuration)
         {
@@ -30,25 +30,47 @@ namespace JWTAuthWebApi.Services
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+            User user = new User();
+            using (var context = new SchoolContext())
+            {
+                var userData = context.User.Where(x => x.Username == model.Username && x.Password == model.Password);
 
-            // return null if user not found
-            if (user == null) return null;
 
+
+                // return null if user not found
+                if (userData == null) return null;
+                else
+                {
+                    user = userData.FirstOrDefault();
+                }
+            }
             // authentication successful so generate jwt token
             var token = GenerateJwtToken(user);
-
             return new AuthenticateResponse(user, token);
         }
 
         public IEnumerable<User> GetAll()
         {
+            List<User> _users;
+            using (var context = new SchoolContext())
+            {
+                _users = context.User.ToList();
+            }
+
             return _users;
         }
 
         public User GetById(int id)
         {
-            return _users.FirstOrDefault(x => x.Id == id);
+            //return _users.FirstOrDefault(x => x.Id == id);
+
+            User _users;
+            using (var context = new SchoolContext())
+            {
+                _users = context.User.Where(x => x.Id == id).FirstOrDefault();
+            }
+
+            return _users;
         }
 
         // helper methods

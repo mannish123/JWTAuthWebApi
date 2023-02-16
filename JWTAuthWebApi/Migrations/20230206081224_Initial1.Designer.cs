@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JWTAuthWebApi.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    [Migration("20230202060932_CreateSchoolDB8")]
-    partial class CreateSchoolDB8
+    [Migration("20230206081224_Initial1")]
+    partial class Initial1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,13 +31,13 @@ namespace JWTAuthWebApi.Migrations
                     b.Property<string>("CourseName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CreatedBy")
+                    b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UpdatedBy")
+                    b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedDate")
@@ -55,10 +55,10 @@ namespace JWTAuthWebApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CreatedBy")
+                    b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("GradeName")
@@ -67,7 +67,37 @@ namespace JWTAuthWebApi.Migrations
                     b.Property<string>("Section")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UpdatedBy")
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Grades");
+                });
+
+            modelBuilder.Entity("JWTAuthWebApi.Entities.Standards", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StandardDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StandardName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedDate")
@@ -75,7 +105,7 @@ namespace JWTAuthWebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Grades");
+                    b.ToTable("Standards");
                 });
 
             modelBuilder.Entity("JWTAuthWebApi.Entities.Student", b =>
@@ -85,22 +115,22 @@ namespace JWTAuthWebApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CreatedBy")
+                    b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GradeId")
+                    b.Property<int?>("GradeId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Height")
+                    b.Property<decimal?>("Height")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("LastName")
@@ -109,31 +139,76 @@ namespace JWTAuthWebApi.Migrations
                     b.Property<byte[]>("Photo")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("UpdatedBy")
+                    b.Property<int?>("StandardId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<int?>("StandardsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StudentCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("Weight")
+                    b.Property<float?>("Weight")
                         .HasColumnType("real");
 
                     b.HasKey("StudentId");
 
                     b.HasIndex("GradeId");
 
+                    b.HasIndex("StandardsId");
+
                     b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("JWTAuthWebApi.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("JWTAuthWebApi.Entities.Student", b =>
                 {
-                    b.HasOne("JWTAuthWebApi.Entities.Grade", "Grade")
+                    b.HasOne("JWTAuthWebApi.Entities.Grade", "Grades")
                         .WithMany()
-                        .HasForeignKey("GradeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GradeId");
 
-                    b.Navigation("Grade");
+                    b.HasOne("JWTAuthWebApi.Entities.Standards", "Standards")
+                        .WithMany()
+                        .HasForeignKey("StandardsId");
+
+                    b.Navigation("Grades");
+
+                    b.Navigation("Standards");
                 });
 #pragma warning restore 612, 618
         }
